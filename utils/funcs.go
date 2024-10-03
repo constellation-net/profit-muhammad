@@ -14,6 +14,7 @@ func RandSliceItem(a []string) string {
 	return a[i]
 }
 
+// SliceContains determines if a slice of strings contains an element exactly equal to a given string.
 func SliceContains(s []string, v string) bool {
 	for _, i := range s {
 		if i == v {

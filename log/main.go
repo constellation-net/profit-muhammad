@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
-	"github.com/t-tomalak/logrus-easy-formatter"
+	easy "github.com/t-tomalak/logrus-easy-formatter"
+
+	"github.com/constellation-net/profit-muhammad/config"
 )
 
 var (
@@ -14,7 +16,7 @@ var (
 )
 
 func LogLevel() logrus.Level {
-	env := strings.ToLower(os.Getenv("ENVIRONMENT"))
+	env := strings.ToLower(config.Config.Environment)
 	switch env {
 	case "production":
 		return logrus.InfoLevel
@@ -35,16 +37,16 @@ func init() {
 	}
 }
 
-func Error(err error, trace string, crash ...bool) {
-	crashOnErr := false
-	if len(crash) > 0 {
-		crashOnErr = crash[0]
+func Error(err error, trace string, fatal ...bool) {
+	fatalErr := false
+	if len(fatal) > 0 {
+		fatalErr = fatal[0]
 	}
 
 	if err != nil {
 		m := fmt.Sprintf("[trace: %s] %s", trace, err.Error())
 
-		if crashOnErr {
+		if fatalErr {
 			Log.Fatal(m)
 		} else {
 			Log.Error(m)

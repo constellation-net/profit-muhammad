@@ -5,7 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"github.com/Jack-Gledhill/profit-muhammad/log"
+	"github.com/constellation-net/profit-muhammad/log"
 )
 
 var (

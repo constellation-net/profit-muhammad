@@ -7,13 +7,17 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"github.com/Jack-Gledhill/profit-muhammad/commands"
-	"github.com/Jack-Gledhill/profit-muhammad/log"
-	"github.com/Jack-Gledhill/profit-muhammad/plugins"
+	"github.com/constellation-net/profit-muhammad/commands"
+	"github.com/constellation-net/profit-muhammad/config"
+	"github.com/constellation-net/profit-muhammad/data"
+	"github.com/constellation-net/profit-muhammad/events"
+	"github.com/constellation-net/profit-muhammad/log"
 )
 
 func main() {
-	client, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
+	defer data.Disconnect()
+
+	client, err := discordgo.New("Bot " + config.Config.Discord.Token)
 	log.Error(err, "CLIENT_CREATE", true)
 
 	client.AddHandler(commands.DispatchHandler)
@@ -22,11 +26,11 @@ func main() {
 	client.Identify.Intents = discordgo.IntentsGuildMessages + discordgo.IntentsGuilds + discordgo.IntentsGuildMembers
 	client.Identify.Presence = discordgo.GatewayStatusUpdate{
 		Game: discordgo.Activity{
-			Name:  "custom",
-			State: "Slayyyy",
-			Type:  4,
+			Name:  config.Config.Discord.Activity.Name,
+			State: config.Config.Discord.Activity.State,
+			Type:  discordgo.ActivityType(config.Config.Discord.Activity.Type),
 		},
-		Status: "online",
+		Status: config.Config.Discord.Activity.Status,
 		AFK:    false,
 	}
 
@@ -38,7 +42,7 @@ func main() {
 	commands.Register(client)
 	defer commands.Deregister(client)
 
-	plugins.Register(client)
+	events.Register(client)
 
 	log.Log.Info("Bot is now running, use CTRL-C to stop...")
 	sc := make(chan os.Signal, 1)
